@@ -29,7 +29,7 @@ RSpec.describe Api::DevicesController, type: :controller do
     post :register, params: { phone_number: '8433213491', carrier: 'Verizon' }
     expect(response.status).to eql 201
     put :terminate, params: { device_id: response.body }
-    expect(response.status).to eql 200
+    expect(response.status).to eql 201
   end
 
   it 'POST /register returns with an error if fields are not valid' do
@@ -65,7 +65,7 @@ RSpec.describe Api::DevicesController, type: :controller do
     device_id = response.body
     expect(response.status).to eql 201
     put :terminate, params: { device_id: device_id }
-    expect(response.status).to eql 200
+    expect(response.status).to eql 201
     post :alive, params: { device_id: device_id }
     expect(response.status).to eql 500
     post :report, params: { device_id: device_id, sender: '😁', message: '🥇' }

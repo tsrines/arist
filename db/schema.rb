@@ -20,8 +20,8 @@ ActiveRecord::Schema.define(version: 2020_12_05_014824) do
     t.text "phone_number"
     t.text "carrier"
     t.datetime "disabled_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "heartbeats", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
