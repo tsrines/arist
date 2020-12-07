@@ -39,7 +39,7 @@ RSpec.describe Api::DevicesController, type: :controller do
     expect(response.status).to eql 500
   end
 
-  it 'POST /alive returns with an error if field are not valid' do
+  it 'POST /alive returns with an error if fields are not valid' do
     post :alive, params: { phone_number: 'dfdf', carrier: 'Verizon' }
     parsed_response = JSON.parse(response.body)
     expect(parsed_response.keys).to include('error')
@@ -53,7 +53,7 @@ RSpec.describe Api::DevicesController, type: :controller do
     expect(response.status).to eql 500
   end
 
-  it 'PUT /terminate returns with an error if field are not valid' do
+  it 'PUT /terminate returns with an error if fields are not valid' do
     put :terminate, params: { phone_number: 'dfdf', carrier: 'Verizon' }
     parsed_response = JSON.parse(response.body)
     expect(parsed_response.keys).to include('error')
@@ -76,5 +76,15 @@ RSpec.describe Api::DevicesController, type: :controller do
     post :register,
          params: { phone_number: '(843) 233-1247', carrier: 'Verizon' }
     expect(Device.all.last.phone_number).to eql '+18432331247'
+  end
+
+  it 'Has support for internation phone number validations' do
+    post :register,
+         params: {
+           phone_number: '(843) 233-1247',
+           carrier: 'Bell Labs',
+           country_code: 'UK'
+         }
+    expect(JSON.parse(response.body).keys).to include('error')
   end
 end
