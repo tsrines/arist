@@ -14,7 +14,7 @@ module Api
     def alive
       device = Device.find(params[:device_id])
       if !device.disabled_at
-        heartbeat = Heartbeat.create!(device_id: params[:device_id])
+        heartbeat = Heartbeat.create!(heartbeat_params)
         render json: {}, status: :created
       else
         render_json_error(:unauthorized, 'Device has been disabled')
@@ -39,7 +39,15 @@ module Api
       end
     end
 
+    def not_found
+      render json: { error: 'Page not found' }, status: 500
+    end
+
     private
+
+    def heartbeat_params
+      params.permit(:device_id)
+    end
 
     def device_params
       params.permit(:carrier, :phone_number)
