@@ -78,7 +78,7 @@ RSpec.describe Api::DevicesController, type: :controller do
     expect(Device.all.last.phone_number).to eql '+18432331247'
   end
 
-  it 'Has support for internation phone number validations' do
+  it 'Has support for international phone number validations' do
     post :register,
          params: {
            phone_number: '(843) 233-1247',
