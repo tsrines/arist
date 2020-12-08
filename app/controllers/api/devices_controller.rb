@@ -1,19 +1,14 @@
 module Api
   class DevicesController < ApplicationController
     def register
-      country_code = !!params[:country_code] ? params[:country_code] : 'US'
-      device =
-        Device.create!(
-          phone_number:
-            Phonelib.parse(params[:phone_number], country_code).e164,
-          carrier: params[:carrier]
-        )
+      phone = Phonelib.parse(params[:phone_number]).e164
+      device = Device.create!(phone_number: phone, carrier: params[:carrier])
       render json: device.id, status: :created
     end
 
     def alive
       device = Device.find(params[:device_id])
-      if !device.disabled_at
+      unless device.disabled_at
         heartbeat = Heartbeat.create!(heartbeat_params)
         render json: {}, status: :created
       else
@@ -23,7 +18,7 @@ module Api
 
     def report
       device = Device.find(params[:device_id])
-      if !device.disabled_at
+      unless device.disabled_at
         report = Report.create!(report_params)
         render json: {}, status: :created
       else
@@ -33,9 +28,11 @@ module Api
 
     def terminate
       device = Device.find(params[:device_id])
-      if (device)
+      unless device.disabled_at
         device.update(disabled_at: Time.now)
         render json: {}, status: 201
+      else
+        render_json_error(:unauthorized, 'Device has been disabled')
       end
     end
 
